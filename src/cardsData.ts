@@ -1,3 +1,7 @@
-export const CARDS_DATA = [{
-    card: 'Ace', symbol: 'A', value: 14 
-},]
+export const CARDS_DATA = [
+  {
+    card: 'Ace',
+    symbol: 'A',
+    value: 14,
+  },
+];
