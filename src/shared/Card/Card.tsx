@@ -1,15 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useMemo } from 'react';
+import { cardType } from 'pages/HomePage/HomePage';
 import useStyles from './useStyles';
 
-export type cardType = {
-  suit: string;
-  value: string | number;
-  color: string;
-};
-
 interface CardProps {
-  card: any;
+  card: cardType;
 }
 const Card: FC<CardProps> = ({ card }) => {
   const classes = useStyles();

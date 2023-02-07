@@ -1,12 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 // import { obj } from 'data/cardsData';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import Card from 'shared/Card';
+import { cardType } from 'pages/HomePage/HomePage';
 import useStyles from './useStyles';
 
 interface PlayerCardsProps {
   playerTotal: number;
-  playerCards: string[];
+  playerCards: cardType[];
 }
 const PlayerCards: FC<PlayerCardsProps> = ({ playerTotal, playerCards }) => {
   const classes = useStyles();

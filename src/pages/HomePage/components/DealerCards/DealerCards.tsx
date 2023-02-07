@@ -1,13 +1,14 @@
 /* eslint-disable react/no-array-index-key */
-import React, { FC, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import Card from 'shared/Card';
 import backCard from 'assets/images/backCard.png';
+import { cardType } from 'pages/HomePage/HomePage';
 import useStyles from './useStyles';
 
 interface DealerCardsProps {
   dealerTotalCards: number;
   gameOver: boolean;
-  dealerCards: string[];
+  dealerCards: cardType[];
 }
 const DealerCards: FC<DealerCardsProps> = ({
   dealerTotalCards,

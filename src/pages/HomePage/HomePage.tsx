@@ -10,10 +10,15 @@ type StayDataType = {
   dealerTotal: number;
   playerTotal: number;
 };
+export type cardType = {
+  suit: string;
+  value: string | number;
+  color: string;
+};
 
 const HomePage = () => {
-  const [playerCards, setPlayerCards] = useState([]);
-  const [dealerCards, setDealerCards] = useState([]);
+  const [playerCards, setPlayerCards] = useState<cardType[]>([]);
+  const [dealerCards, setDealerCards] = useState<cardType[]>([]);
   const [playerTotal, setPlayerTotal] = useState(0);
   const [dealerTotal, setDealerTotal] = useState(0);
   const [gameMessage, setGameMessage] = useState('');
