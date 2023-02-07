@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-unused-vars */
 const customFetch: (url: string, headers: RequestInit) => Promise<any> = (
   url: string,
   headers: RequestInit
@@ -8,15 +10,34 @@ const customFetch: (url: string, headers: RequestInit) => Promise<any> = (
 
 class Api {
   baseUrl: string;
-  headers: any;
+
+  headers: RequestInit;
 
   constructor({ baseUrl, headers }: { baseUrl: string; headers?: any }) {
     this.baseUrl = baseUrl;
     this.headers = headers;
   }
 
-  startGame(): Promise<any> {
+  startGame() {
     return customFetch(`${this.baseUrl}/start`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  hit() {
+    return customFetch(`${this.baseUrl}/hit`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  stay() {
+    return customFetch(`${this.baseUrl}/stay`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

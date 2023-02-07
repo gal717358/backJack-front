@@ -1,46 +1,63 @@
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable react/no-array-index-key */
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from 'utils/Api';
-// import useStyles from './useStyles';
+import Card from 'shared/Card';
+import backCard from 'assets/images/backCard.png';
+import Button from 'shared/Button';
+import useStyles from './useStyles';
 
+type StayDataType = {
+  dealerCards: string[];
+  dealerTotal: number;
+  playerTotal: number;
+};
+type SymbolTyp = {
+  [key: string]: {
+    color: string;
+  };
+};
+const obj: SymbolTyp = {
+  '♠': { color: 'black' },
+  '♣': { color: 'black' },
+  '♥': { color: 'red' },
+  '♦': { color: 'red' },
+};
 const HomePage = () => {
-  // const classes = useStyles();
-
   const [playerCards, setPlayerCards] = useState([]);
   const [dealerCards, setDealerCards] = useState([]);
   const [playerTotal, setPlayerTotal] = useState(0);
   const [dealerTotal, setDealerTotal] = useState(0);
   const [gameMessage, setGameMessage] = useState('');
   const [gameOver, setGameOver] = useState(false);
+  const classes = useStyles();
 
-  const startGame = () => {
-    fetch('http://localhost:3001/start')
-      .then((res) => res.json())
+  const startGame = useCallback(() => {
+    api
+      .startGame()
       .then((data) => {
         setPlayerCards(data.playerCards);
         setDealerCards(data.dealerCards);
         setPlayerTotal(data.playerTotal);
         setDealerTotal(data.dealerTotal);
         setGameMessage('Your turn. Would you like to hit or stay?');
+      })
+      .catch((e) => {
+        console.log(e);
       });
-  };
-  const startGameTest = useCallback(() => {
-    api.startGame().then((res) => console.log(res));
   }, []);
 
-  startGameTest();
-
-  const playAgain = () => {
+  const playAgain = useCallback(() => {
     startGame();
     setGameOver(false);
-  };
+  }, [startGame]);
 
   useEffect(() => {
     startGame();
-  }, []);
+  }, [startGame]);
 
-  const hit = () => {
-    fetch('http://localhost:3001/hit')
-      .then((res) => res.json())
+  const onHit = useCallback(() => {
+    api
+      .hit()
       .then((data) => {
         setPlayerCards(data.playerCards);
         setPlayerTotal(data.playerTotal);
@@ -48,55 +65,124 @@ const HomePage = () => {
           setGameMessage('You busted! Dealer wins.');
           setGameOver(true);
         }
+      })
+      .catch((e) => {
+        console.log(e);
       });
-  };
+  }, []);
 
-  const stay = () => {
-    fetch('http://localhost:3001/stay')
-      .then((res) => res.json())
+  const calculateCardsValue = useCallback((data: StayDataType) => {
+    if (data.dealerTotal > 21) {
+      setGameMessage('Dealer busted! You win.');
+      setGameOver(true);
+    } else if (data.playerTotal > data.dealerTotal) {
+      setGameMessage('You win!');
+      setGameOver(true);
+    } else {
+      setGameMessage('Dealer wins.');
+      setGameOver(true);
+    }
+  }, []);
+
+  const onStay = useCallback(() => {
+    api
+      .stay()
       .then((data) => {
         setDealerCards(data.dealerCards);
         setDealerTotal(data.dealerTotal);
-        if (data.dealerTotal > 21) {
-          setGameMessage('Dealer busted! You win.');
-          setGameOver(true);
-        } else if (data.playerTotal > data.dealerTotal) {
-          setGameMessage('You win!');
-          setGameOver(true);
-        } else {
-          setGameMessage('Dealer wins.');
-          setGameOver(true);
-        }
+        calculateCardsValue(data);
+      })
+      .catch((e) => {
+        console.log(e);
       });
-  };
+  }, [calculateCardsValue]);
+
+  const getSymbol = useCallback(() => {
+    const symbols = Object.keys(obj);
+    const random = Math.floor(Math.random() * symbols.length);
+    return symbols[random];
+  }, []);
+
+  const dealerHands = useMemo(() => {
+    if (!gameOver) {
+      const symbol = getSymbol();
+      return (
+        <>
+          <Card
+            value={dealerCards[0]}
+            symbol={symbol}
+            color={obj[symbol].color}
+          />
+          <img
+            src={backCard}
+            alt='backCard'
+            className={classes.backCardStyle}
+          />
+        </>
+      );
+    }
+    return dealerCards?.map((card, index) => {
+      const symbol = getSymbol();
+      return (
+        <Card
+          key={index}
+          value={card}
+          symbol={symbol}
+          color={obj[symbol].color}
+        />
+      );
+    });
+  }, [classes.backCardStyle, dealerCards, gameOver, getSymbol]);
 
   return (
-    <div className='game-container'>
+    <section className={classes.root}>
       <div className='player-cards'>
-        <h3>Player</h3>
-        <div>{playerCards.map((card) => card)}</div>
-        <div>Total: {playerTotal}</div>
-      </div>
-      <div className='dealer-cards'>
-        <h3>Dealer</h3>
-        <div>{!gameOver ? `${dealerCards[0]} ***` : dealerCards}</div>
-      </div>
-      <h3>{dealerTotal}</h3>
-      <div className='game-message'>{gameMessage}</div>
-      {!gameOver && (
-        <div className='game-actions'>
-          <button type='button' onClick={hit}>
-            Hit
-          </button>
-          <button type='button' onClick={stay}>
-            Stay
-          </button>
+        <div className={classes.cardsContainer}>{dealerHands}</div>
+        <div className={classes.scoreWrapper}>
+          <h3 className={classes.playerTitleStyle}>Dealer Hands</h3>
+          {gameOver && <h3>Total: {dealerTotal}</h3>}
         </div>
-      )}
-      <button type='button' onClick={playAgain}>
-        play again{' '}
-      </button>
-    </div>
+      </div>
+
+      <div className='player-cards'>
+        <div className={classes.scoreWrapper}>
+          <h3 className={classes.playerTitleStyle}>Your Hand</h3>
+          <h3>Total: {playerTotal}</h3>
+        </div>
+        <div className={classes.cardsContainer}>
+          {playerCards?.map((card, index) => {
+            const symbol = getSymbol();
+            return (
+              <Card
+                key={index}
+                value={card}
+                symbol={symbol}
+                color={obj[symbol].color}
+              />
+            );
+          })}
+        </div>
+      </div>
+      <h2 className='game-message'>{gameMessage}</h2>
+      <div className={classes.buttonsWrapper}>
+        {!gameOver ? (
+          <div className={classes.buttonsWrapper}>
+            <Button
+              label='Hit'
+              onClick={onHit}
+              customStyle={classes.hitButtonStyle}
+            />
+            <Button
+              label='Stay'
+              onClick={onStay}
+              customStyle={classes.stayButtonStyle}
+            />
+          </div>
+        ) : (
+          <Button label='play again' onClick={playAgain} />
+        )}
+      </div>
+    </section>
   );
 };
 export default HomePage;
