@@ -1,37 +1,59 @@
-import React, { FC, useMemo } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FC, useMemo } from 'react';
 import useStyles from './useStyles';
 
-interface CardProps {
-  value: string;
-  symbol: string;
+export type cardType = {
+  suit: string;
+  value: string | number;
   color: string;
+};
+
+interface CardProps {
+  card: any;
 }
-const Card: FC<CardProps> = ({ value, symbol, color }) => {
+const Card: FC<CardProps> = ({ card }) => {
   const classes = useStyles();
   const mainIcon = useMemo(() => {
-    if (value === 'Q') {
+    if (card?.value === 'Q') {
       return '♚';
     }
-    if (value === 'K') {
+    if (card?.value === 'K') {
       return '♛';
     }
-    if (value === 'A') {
+    if (card?.value === 'A') {
       return '♠';
     }
-    return symbol;
-  }, [symbol, value]);
+    return card?.value;
+  }, [card]);
+
+  const matchSuit = useMemo(() => {
+    if (card?.suit === 'hearts') {
+      return '♥';
+    }
+    if (card?.suit === 'diamonds') {
+      return '♦';
+    }
+    if (card?.suit === 'spades') {
+      return '♠';
+    }
+    if (card?.suit === 'clubs') {
+      return '♣';
+    }
+    return '';
+  }, [card?.suit]);
+
   return (
     <div className={classes.root}>
       <div className={classes.topContainerStyle}>
-        <div style={{ color: color }}>{value}</div>
-        <div style={{ color: color }}>{symbol}</div>
+        <div style={{ color: card?.color }}>{card?.value}</div>
+        <div style={{ color: card?.color }}>{matchSuit}</div>
       </div>
-      <div className={classes.middleSymbolStyle} style={{ color: color }}>
+      <div className={classes.middleSymbolStyle} style={{ color: card?.color }}>
         {mainIcon}
       </div>
       <div className={classes.bottomContainerStyle}>
-        <div style={{ color: color }}>{value}</div>
-        <div style={{ color: color }}>{symbol}</div>
+        <div style={{ color: card?.color }}>{card?.value}</div>
+        <div style={{ color: card?.color }}>{matchSuit}</div>
       </div>
     </div>
   );
