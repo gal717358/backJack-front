@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from 'utils/Api';
-import Button from 'shared/Button';
+import Button from 'shared/components/Button';
 import useStyles from './useStyles';
 import DealerCards from './components/DealerCards';
 import PlayerCards from './components/PlayerCards';

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 // import { obj } from 'data/cardsData';
 import { FC } from 'react';
-import Card from 'shared/Card';
+import Card from 'shared/components/Card';
 import { cardType } from 'pages/HomePage/HomePage';
 import useStyles from './useStyles';
 

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import { FC, useMemo } from 'react';
-import Card from 'shared/Card';
+import Card from 'shared/components/Card';
 import backCard from 'assets/images/backCard.png';
 import { cardType } from 'pages/HomePage/HomePage';
 import useStyles from './useStyles';
