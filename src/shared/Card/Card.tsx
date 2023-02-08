@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { cardType } from 'pages/HomePage/HomePage';
+import { useGetSuitIcon } from 'shared/hooks/useGetSuitIcon';
+import { useMatchSuitToCard } from 'shared/hooks/useMatchSuitToCard';
 import useStyles from './useStyles';
 
 interface CardProps {
@@ -8,34 +10,8 @@ interface CardProps {
 }
 const Card: FC<CardProps> = ({ card }) => {
   const classes = useStyles();
-  const mainIcon = useMemo(() => {
-    if (card?.value === 'Q') {
-      return '♚';
-    }
-    if (card?.value === 'K') {
-      return '♛';
-    }
-    if (card?.value === 'A') {
-      return '♠';
-    }
-    return card?.value;
-  }, [card]);
-
-  const matchSuit = useMemo(() => {
-    if (card?.suit === 'hearts') {
-      return '♥';
-    }
-    if (card?.suit === 'diamonds') {
-      return '♦';
-    }
-    if (card?.suit === 'spades') {
-      return '♠';
-    }
-    if (card?.suit === 'clubs') {
-      return '♣';
-    }
-    return '';
-  }, [card?.suit]);
+  const suitIcon = useGetSuitIcon(card);
+  const matchSuit = useMatchSuitToCard(card);
 
   return (
     <div className={classes.root}>
@@ -44,7 +20,7 @@ const Card: FC<CardProps> = ({ card }) => {
         <div style={{ color: card?.color }}>{matchSuit}</div>
       </div>
       <div className={classes.middleSymbolStyle} style={{ color: card?.color }}>
-        {mainIcon}
+        {suitIcon}
       </div>
       <div className={classes.bottomContainerStyle}>
         <div style={{ color: card?.color }}>{card?.value}</div>
