@@ -13,7 +13,7 @@ const PlayerCards: FC<PlayerCardsProps> = ({ playerTotal, playerCards }) => {
   const classes = useStyles();
 
   return (
-    <div className='player-cards'>
+    <div>
       <div className={classes.scoreWrapper}>
         <h3 className={classes.playerTitleStyle}>Your Hand</h3>
         <h3>Total: {playerTotal}</h3>
